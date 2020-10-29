@@ -1,0 +1,6 @@
+Start every command with "!".
+Available commands:
+help - displays help (this is what are you looking at)
+log - displays bot's log
+clear - clears bot's log
+setrand *arg* - sets bot random multipler (frequency of reactions is 1/multipler) to arg
