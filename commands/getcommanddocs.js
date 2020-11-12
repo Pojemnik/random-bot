@@ -12,6 +12,11 @@ module.exports = {
         else {
             let str = exports.mapDocs.substr(exports.mapDocs.search('Wyświetlanie/debug:'));
             let posStart = str.search(args[0]);
+            if(posStart == -1){
+                log.log(`Incorrect argument: ${args[0]}`);
+                message.channel.send(`Incorrect argument: ${args[0]}`);
+                return;
+            }
             let temp = str.substr(posStart);
             let endRegex = new RegExp(/\\n\w|\n\w|.$/);
             let posEnd = temp.search(endRegex);

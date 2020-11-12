@@ -13,6 +13,11 @@ module.exports = {
             let startRegex = new RegExp(`${args[0]}:*\\s`);
             let str = exports.mapDocs.substr(exports.mapDocs.search('</Znacznik>'));
             let posStart = str.search(startRegex);
+            if(posStart == -1){
+                log.log(`Incorrect argument: ${args[0]}`);
+                message.channel.send(`Incorrect argument: ${args[0]}`);
+                return;
+            }
             let temp = str.substr(posStart);
             let endRegex = new RegExp(/\\n\w|\n\w|.$/);
             let posEnd = temp.search(endRegex);
