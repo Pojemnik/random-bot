@@ -12,7 +12,9 @@ client.commands = new Discord.Collection();
 
 randMultipler = randmul;
 prefix = default_prefix;
-const VER = '0.3'
+levelDocs = '';
+commandsDocs = '';
+const VER = '0.5';
 
 function init() {
   log.log(`Random bot version ${VER}`);
@@ -21,6 +23,14 @@ function init() {
   log.log(`Logged in as ${client.user.tag}`);
   log.log(`Emoji n=${emojis.length}`);
   cfg.create(prefix, token, randMultipler);
+  log.log('Fetching Storkman docs');
+  client.commands.forEach(command => {
+    if(typeof command.init === "function"){
+      command.init();
+    }
+  });
+  //levelDocs = getter.getFileHttps('https://raw.githubusercontent.com/Pojemnik/StorkMan/master/docs/xml%20opisu%20poziomu.txt');
+  //commandsDocs = getter.getFileHttps('https://raw.githubusercontent.com/Pojemnik/StorkMan/master/docs/komendy.txt');
 }
 
 function executeCommand(msg) {

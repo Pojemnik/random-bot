@@ -4,3 +4,6 @@ help - displays help (this is what are you looking at)
 log - displays bot's log
 clear - clears bot's log
 setrand *arg* - sets bot random multipler (frequency of reactions is 1/multipler) to arg
+getmapdocs *arg* - gets documentation of part of storkman's map from github, you can use argument all to show all or only show specific part od docs
+getleveldocs *arg* - same as getmapdocs but for map
+getcommanddocs *arg* - same as getmapdocs but for commands
