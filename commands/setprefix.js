@@ -1,5 +1,4 @@
 const log = require('../logger.js');
-const cfg = require('../config.js');
 
 module.exports = {
 	name: 'setprefix',
@@ -13,9 +12,10 @@ module.exports = {
 			prefix = args[0];
 			log.log(`prefix set to: ${args[0]}`);
 			message.channel.send(`Prefix set to: ${args[0]}`);
-			cfg.update('default_prefix', prefix);
-		  } catch {
+			config_object.set('default_prefix', prefix);
+		  } catch (e) {
 			log.log(`Incorrect prefix value!: ${args[0]}`);
+			log.log(`error: ${e}`);
 			message.channel.send('Incorrect prefix value!');
 		  }
 	},
