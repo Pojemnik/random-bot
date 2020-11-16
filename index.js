@@ -14,7 +14,7 @@ config_object = new cfg.config(default_prefix, token, default_randmul, default_r
 
 levelDocs = '';
 commandsDocs = '';
-const VERSION = '0.6';
+const VERSION = '0.6.1';
 
 function init() {
   log.log(`Random bot version ${VERSION}`);
@@ -25,7 +25,7 @@ function init() {
   log.log(`Reactions: ${default_reactions}`);
   log.log('Fetching Storkman docs');
   client.commands.forEach(command => {
-    if(typeof command.init === "function"){
+    if (typeof command.init === "function") {
       command.init();
     }
   });
@@ -71,6 +71,14 @@ client.on('message', msg => {
       executeCommand(msg);
     } catch (err) {
       log.log(`Unknown error while executing command: ${err}`);
+    }
+  }
+  if (['Mnie śmieszy', 'mnie śmieszy', 'mnie smieszy'].includes(msg.content)) {
+    msg.channel.send('Mnie też').catch((error) => { log.log(error); });
+  }
+  if (['XD', 'xd', 'Xd', 'xD'].includes(msg.content)) {
+    if (config_object.reactions && Math.floor(Math.random() * config_object.randmul) == 0) {
+      msg.channel.send('XD').catch((error) => { log.log(error); });
     }
   }
 });
