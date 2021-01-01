@@ -14,7 +14,7 @@ config_object = new cfg.config(default_prefix, token, default_randmul, default_r
 
 levelDocs = '';
 commandsDocs = '';
-const VERSION = '0.6.1';
+const VERSION = '0.6.2';
 
 function init() {
   log.log(`Random bot version ${VERSION}`);

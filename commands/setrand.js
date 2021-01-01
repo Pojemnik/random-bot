@@ -1,5 +1,4 @@
 log = require('../logger.js');
-cfg = require('../config.js');
 
 module.exports = {
 	name: 'setrand',
@@ -13,9 +12,10 @@ module.exports = {
 			randMultipler = parseFloat(args[0]);
 			log.log(`randMultipler set to: ${args[0]}`);
 			message.channel.send(`randMultipler set to: ${args[0]}`);
-			cfg.update('randmul', randMultipler);
-		} catch {
+			config_object.set('randmul', randMultipler);
+		} catch (err) {
 			log.log(`Incorrect randMultipler value!: ${args[0]}`);
+			log.log(`Error: ${err}`);
 			message.channel.send('Incorrect randMultipler value!');
 		}
 	},

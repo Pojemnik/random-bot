@@ -5,6 +5,6 @@ log - displays bot's log
 clear - clears bot's log
 setrand *arg* - sets bot random multipler (frequency of reactions is 1/multipler) to arg
 getmapdocs *arg* - gets documentation of part of storkman's map from github, you can use argument all to show all or only show specific part od docs
-getleveldocs *arg* - same as getmapdocs but for map
+getleveldocs *arg* - same as getmapdocs but for level
 getcommanddocs *arg* - same as getmapdocs but for commands
 reactions *arg* - disables/enables reacting for messages, if arg provided, sets reactions to it's value, if not, negates current value
