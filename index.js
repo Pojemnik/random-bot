@@ -21,7 +21,7 @@ function init() {
   log.log(`randMultipler set to: ${default_randmul}`);
   log.log(`prefix set to: ${default_prefix}`);
   log.log(`Logged in as ${client.user.tag}`);
-  log.log(`Emoji n=${emojis.length}`);
+  log.log(`Emoji n=${emojis.length + client.emojis.cache.array.length}`);
   log.log(`Reactions: ${default_reactions}`);
   log.log('Fetching Storkman docs');
   client.commands.forEach(command => {
@@ -74,20 +74,20 @@ client.on('message', msg => {
         log.log(error);
       });
     }
-    if (msg.content[0] == config_object.prefix) {
-      try {
-        executeCommand(msg);
-      } catch (err) {
-        log.log(`Unknown error while executing command: ${err}`);
-      }
+  }
+  if (msg.content[0] == config_object.prefix) {
+    try {
+      executeCommand(msg);
+    } catch (err) {
+      log.log(`Unknown error while executing command: ${err}`);
     }
-    if (['Mnie śmieszy', 'mnie śmieszy', 'mnie smieszy'].includes(msg.content)) {
-      msg.channel.send('Mnie też').catch((error) => { log.log(error); });
-    }
-    if (['XD', 'xd', 'Xd', 'xD'].includes(msg.content)) {
-      if (config_object.reactions && Math.floor(Math.random() * config_object.randmul) == 0) {
-        msg.channel.send('XD').catch((error) => { log.log(error); });
-      }
+  }
+  if (['Mnie śmieszy', 'mnie śmieszy', 'mnie smieszy'].includes(msg.content)) {
+    msg.channel.send('Mnie też').catch((error) => { log.log(error); });
+  }
+  if (['XD', 'xd', 'Xd', 'xD'].includes(msg.content)) {
+    if (config_object.reactions && Math.floor(Math.random() * config_object.randmul) == 0) {
+      msg.channel.send('XD').catch((error) => { log.log(error); });
     }
   }
 });
