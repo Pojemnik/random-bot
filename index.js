@@ -14,7 +14,7 @@ config_object = new cfg.config(default_prefix, token, default_randmul, default_r
 
 levelDocs = '';
 commandsDocs = '';
-const VERSION = '0.6.2';
+const VERSION = '0.6.3';
 
 function init() {
   log.log(`Random bot version ${VERSION}`);
@@ -62,23 +62,32 @@ client.on('message', msg => {
     return;
   }
   if (config_object.reactions && Math.floor(Math.random() * config_object.randmul) == 0) {
-    msg.react(emojis[Math.floor(Math.random() * emojis.length)]).catch((error) => {
-      log.log(error);
-    })
-  }
-  if (msg.content[0] == config_object.prefix) {
-    try {
-      executeCommand(msg);
-    } catch (err) {
-      log.log(`Unknown error while executing command: ${err}`);
+    totalEmojis = emojis.length + client.emojis.cache.array.length;
+    randomValue = Math.floor(Math.random() * totalEmojis);
+    if (randomValue < emojis.length) {
+      msg.react(emojis[randomValue]).catch((error) => {
+        log.log(error);
+      })
     }
-  }
-  if (['Mnie śmieszy', 'mnie śmieszy', 'mnie smieszy'].includes(msg.content)) {
-    msg.channel.send('Mnie też').catch((error) => { log.log(error); });
-  }
-  if (['XD', 'xd', 'Xd', 'xD'].includes(msg.content)) {
-    if (config_object.reactions && Math.floor(Math.random() * config_object.randmul) == 0) {
-      msg.channel.send('XD').catch((error) => { log.log(error); });
+    else {
+      msg.react(client.emojis.cache.random()).catch((error) => {
+        log.log(error);
+      });
+    }
+    if (msg.content[0] == config_object.prefix) {
+      try {
+        executeCommand(msg);
+      } catch (err) {
+        log.log(`Unknown error while executing command: ${err}`);
+      }
+    }
+    if (['Mnie śmieszy', 'mnie śmieszy', 'mnie smieszy'].includes(msg.content)) {
+      msg.channel.send('Mnie też').catch((error) => { log.log(error); });
+    }
+    if (['XD', 'xd', 'Xd', 'xD'].includes(msg.content)) {
+      if (config_object.reactions && Math.floor(Math.random() * config_object.randmul) == 0) {
+        msg.channel.send('XD').catch((error) => { log.log(error); });
+      }
     }
   }
 });
