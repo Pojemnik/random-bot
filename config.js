@@ -2,11 +2,12 @@ const fs = require('fs');
 log = require('./logger.js')
 
 exports.config = class Config {
-  constructor(prefix, token, randmul, reactions) {
+  constructor(prefix, token, randmul, reactions, custommul) {
     this.prefix = prefix;
     this.token = token;
     this.randmul = randmul;
     this.reactions = reactions;
+    this.custommul = custommul;
   }
 
   save() {
