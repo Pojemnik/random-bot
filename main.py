@@ -8,16 +8,17 @@ import hikari.events.lifetime_events
 import hikari.events.message_events
 import hikari.messages
 import inspect
+from lightbulb import slash_commands
 
 '''
 TODO:
-Load command blacklist form a file
 Move commands code somewhere
 Make a class for config
 Better logging
-Slash commands
 '''
+
 config = {}
+ENABLED_GUILDS=[]
 
 def int_try_parse(value: str) -> int:
     try:
@@ -33,25 +34,12 @@ def get_guild_name(snowflake: hikari.Snowflake) -> str:
     return guild.name
 
 
-def get_server_command_prefix(bot: lightbulb.command_handler.Bot, message: hikari.messages.Message) -> str:
-    id = str(message.guild_id)
-    if id not in config:
-        try:
-            with open('default_config.json') as dc:
-                default_config = json.load(dc)
-                config[id] = default_config
-        except IOError as e:
-            print(f'Critical error: {e}')
-            raise e
-    return config[id]['command_prefix']
-
-
 token = ''
 with open('token.secret') as token_file:
-    token = token_file.read()
+    token = token_file.read().strip()
 if token == '':
     raise Exception('Token not found')
-bot = lightbulb.Bot(token=token, prefix=get_server_command_prefix)
+bot = lightbulb.Bot(token=token,slash_commands_only=True)
 
 
 def save_config():
@@ -75,67 +63,75 @@ def load_config():
         print('Config loaded')
 
 
-@bot.command(allow_extra_arguments=False)
-async def save(ctx: lightbulb.Context):
-    save_config()
-    await ctx.get_channel().send('Config saved')
+class Load_config(slash_commands.SlashCommand):
+    enabled_guilds = ENABLED_GUILDS
+    description: str = "Saves bot config"
+    checks = [lightbulb.owner_only]
+    
+    async def callback(self, context: slash_commands.SlashCommandContext) -> None:
+        load_config()
+        await context.respond('Config loaded')
+
+bot.add_slash_command(Load_config)
 
 
-@bot.command(allow_extra_arguments=False)
-async def łó(ctx: lightbulb.Context):
-    if ctx.message.author.id in []:
-        await ctx.get_channel().send('Nie.')
+class Lo(slash_commands.SlashCommand):
+    enabled_guilds = ENABLED_GUILDS
+    description: str = "Sends łóó string"
+    name='łó'
+
+    async def callback(self, context: slash_commands.SlashCommandContext) -> None:
+        if context.author.id in config[str(context.guild_id)]["lo_command_blacklist"]:
+            await context.respond('Nie.')
+        else:
+            await context.respond('ŁóóÓÓÓÓóÓóÓÓÓóÓóÓÓÓÓóóóóóóÓóóóóóÓÓóÓÓÓÓÓÓóóÓóóÓ')
+
+bot.add_slash_command(Lo)
+
+
+class Setrand(slash_commands.SlashCommand):
+    enabled_guilds = ENABLED_GUILDS
+    description: str = "Set chance for random emoji reaction to a message"
+    chance: int = slash_commands.Option("New reaction chance (%)")
+
+    async def callback(self, context: slash_commands.SlashCommandContext):
+        chance = context.options["chance"].value
+        if 0 > chance or chance > 100:
+            await context.respond("Incorrect parameter, expected an integer between 0 and 100 (inclusive)")
+            return
+        config[str(context.guild_id)]['reaction_parameter'] = chance
+        await context.respond(f'Reaction chance set to {chance}%')
+        print(
+            f'Reaction chance set to {chance} on server {get_guild_name(context.guild_id)}')
+        save_config()
+
+bot.add_slash_command(Setrand)
+
+
+class Setcustommul(slash_commands.SlashCommand):
+    enabled_guilds = ENABLED_GUILDS
+    description: str = "Set chance of selecting a custom emoji when reacting"
+    chance: int = slash_commands.Option('Chance of custom emoji (%)')
+    
+    async def callback(self, context: slash_commands.SlashCommandContext) -> None:
+        param = context.options["chance"].value
+        if 0 > param or param > 100:
+            await context.respond("Incorrect parameter, expected an integer between 0 and 100 (inclusive)")
+            return
+        config[str(context.guild_id)]['custom_emoji_chance'] = param
+        await context.respond(f'Custom emoji chance set to {param}%')
+        print(
+            f'Custom emoji chance set to {param} on server {get_guild_name(context.guild_id)}')
+        save_config()
+
+bot.add_slash_command(Setcustommul)
+
+@bot.listen(lightbulb.SlashCommandErrorEvent)
+async def on_error(event: lightbulb.SlashCommandErrorEvent):
+    if(isinstance(event.exception,lightbulb.errors.NotOwner)):
+        await event.context.respond("Only bot owner can load config")
     else:
-        await ctx.get_channel().send('ŁóóÓÓÓÓóÓóÓÓÓóÓóÓÓÓÓóóóóóóÓóóóóóÓÓóÓÓÓÓÓÓóóÓóóÓ')
-
-
-@bot.command(allow_extra_arguments=False)
-async def setrand(ctx: lightbulb.Context, reaction_chance: str):
-    param, ok = int_try_parse(reaction_chance)
-    if not ok or 0 > param or param > 100:
-        await ctx.get_channel().send("Incorrect parameter, expected an integer between 0 and 100 (inclusive)")
-        return
-    config[str(ctx.message.guild_id)]['reaction_parameter'] = param
-    await ctx.get_channel().send(f'Reaction chance set to {param}%')
-    print(
-        f'Reaction chance set to {param} on server {get_guild_name(ctx.guild_id)}')
-    save_config()
-
-
-@bot.command(allow_extra_arguments=False)
-async def setcustommul(ctx: lightbulb.Context, custom_emoji_chance: str):
-    param, ok = int_try_parse(custom_emoji_chance)
-    if not ok or 0 > param or param > 100:
-        await ctx.get_channel().send("Incorrect parameter, expected an integer between 0 and 100 (inclusive)")
-        return
-    config[str(ctx.message.guild_id)]['custom_emoji_chance'] = param
-    await ctx.get_channel().send(f'Custom emoji chance set to {param}%')
-    print(
-        f'Custom emoji chance set to {param} on server {get_guild_name(ctx.guild_id)}')
-    save_config()
-
-
-@bot.command(allow_extra_arguments=False)
-async def setprefix(ctx: lightbulb.Context, prefix: str):
-    if prefix[0] in '#@':
-        await ctx.get_channel().send("Incorrect parameter, expected a string not starting with '#' or '@'")
-        return
-    config[str(ctx.message.guild_id)]['command_prefix'] = prefix
-    await ctx.get_channel().send(f'Command prefix set to {prefix}')
-    print(
-        f'Command prefix set to {prefix} on server {get_guild_name(ctx.guild_id)}')
-    save_config()
-
-
-@bot.listen(lightbulb.events.CommandErrorEvent)
-async def on_command_error(event: lightbulb.events.CommandErrorEvent):
-    if isinstance(event.exception, lightbulb.errors.CommandNotFound):
-        await event.message.respond("Unknown command")
-    if isinstance(event.exception, lightbulb.errors.NotEnoughArguments):
-        await event.message.respond(f'Not enough arguments. This command shoud take {len(inspect.signature(event.command.callback).parameters) - 1} arguments')
-    if isinstance(event.exception, lightbulb.errors.TooManyArguments):
-        await event.message.respond(f'Too many arguments. This command shoud take {len(inspect.signature(event.command.callback).parameters) - 1} arguments')
-
+        raise event.exception
 
 @bot.listen(hikari.ShardReadyEvent)
 async def ready_listener(event: hikari.ShardReadyEvent):
@@ -155,6 +151,5 @@ async def on_message(event: hikari.events.message_events.GuildMessageCreateEvent
             await event.message.add_reaction(random.choice(custom_emojis))
         else:
             await event.message.add_reaction(random.choice(emojis))
-
 
 bot.run()

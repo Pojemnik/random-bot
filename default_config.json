@@ -1,1 +1,1 @@
-{"command_prefix": "$", "reaction_parameter": 100, "custom_emoji_chance": 50}
+{"reaction_parameter": 100, "custom_emoji_chance": 50, "lo_command_blacklist":[]}
