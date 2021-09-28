@@ -1,14 +1,12 @@
-from logging import FileHandler, exception
 import lightbulb
 import random
-from emoji import emojis
 import hikari
-import hikari.events.lifetime_events
-import hikari.events.message_events
-import hikari.messages
-from __init__ import cfg
 from pathlib import Path
 import logging
+import os
+
+from emoji import emojis
+from __init__ import cfg
 
 
 def create_bot() -> lightbulb.Bot:
@@ -65,9 +63,18 @@ def main():
                 await event.message.add_reaction(random.choice(custom_emojis))
             else:
                 await event.message.add_reaction(random.choice(emojis))
-
+        if random.randint(1, 100) <= cfg.get_value(event.guild_id, 'reaction_parameter'):
+            xd = ['XD', 'xd', 'Xd', 'xD']
+            if any(s in event.message.content for s in xd):
+                await event.message.respond('XD')
+            
     bot.run()
 
 
 if __name__ == "__main__":
+    if os.name != "nt":
+        # uvloop is only available on UNIX systems, but instead of coding
+        # for the OS, we include this if statement to make life easier.
+        import uvloop
+        uvloop.install()
     main()
