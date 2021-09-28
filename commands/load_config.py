@@ -2,6 +2,7 @@ import lightbulb
 from lightbulb import slash_commands
 from __init__ import ENABLED_GUILDS,cfg
 
+
 class Load_config(slash_commands.SlashCommand):
     enabled_guilds = ENABLED_GUILDS
     description: str = "Loads bot config"

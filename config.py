@@ -1,5 +1,6 @@
 import json
 import typing
+import logging
 
 class Config:
 
@@ -14,9 +15,9 @@ class Config:
             with open(self.config_file_path, 'w') as f:
                 json.dump(self.config, f)
         except IOError as e:
-            print(e)
+            logging.error(e)
         else:
-            print('Config saved')
+            logging.info('Config saved')
 
 
     def load(self) -> None:
@@ -24,9 +25,9 @@ class Config:
             with open(self.config_file_path) as f:
                 self.config = json.load(f)
         except IOError as e:
-            print(e)
+            logging.error(e)
         else:
-            print('Config loaded')
+            logging.info('Config loaded')
 
     def load_default_config_if_needed(self) -> None:
         if self.default_config != {}:
@@ -35,7 +36,7 @@ class Config:
             with open(self.default_config_file_path) as f:
                 self.default_config = json.load(f)
         except IOError as e:
-            print(e)
+            logging.critical(e)
             raise e
             
 

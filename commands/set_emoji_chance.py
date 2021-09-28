@@ -2,7 +2,7 @@ import lightbulb
 from lightbulb import slash_commands
 from __init__ import ENABLED_GUILDS, cfg
 from util import get_guild_name
-
+import logging
 
 class Set_emoji_chance(slash_commands.SlashCommand):
     enabled_guilds = ENABLED_GUILDS
@@ -17,7 +17,7 @@ class Set_emoji_chance(slash_commands.SlashCommand):
             return
         cfg.set_value(context.guild_id, 'reaction_parameter', chance)
         await context.respond(f'Reaction chance set to {chance}%')
-        print(
+        logging.info(
             f'Reaction chance set to {chance} on server {get_guild_name(context.bot, context.guild_id)}')
 
 
