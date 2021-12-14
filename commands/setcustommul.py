@@ -11,7 +11,7 @@ class Set_custom_emoji_chance(slash_commands.SlashCommand):
     name: str = "setcustomemojichance"
 
     async def callback(self, context: slash_commands.SlashCommandContext) -> None:
-        param = context.options["chance"].value
+        param = context.options.chance
         if 0 > param or param > 100:
             await context.respond("Incorrect parameter, expected an integer between 0 and 100 (inclusive)")
             return

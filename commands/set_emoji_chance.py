@@ -11,7 +11,7 @@ class Set_emoji_chance(slash_commands.SlashCommand):
     name: str = "setreactionchance"
 
     async def callback(self, context: slash_commands.SlashCommandContext):
-        chance = context.options["chance"].value
+        chance = context.options.chance
         if 0 > chance or chance > 100:
             await context.respond("Incorrect parameter, expected an integer between 0 and 100 (inclusive)")
             return
