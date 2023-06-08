@@ -1,0 +1,8 @@
+[
+    [
+        "2.3.0", "Added removing last reaction from current channel."
+    ],
+    [
+        "2.4.0", "Added changelog command"
+    ]
+]
