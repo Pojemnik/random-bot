@@ -3,7 +3,7 @@ from __init__ import ENABLED_GUILDS, cfg
 
 plugin = lightbulb.Plugin("version")
 
-VERSION_STRING = 'v2.2.0'
+VERSION_STRING = 'v2.3.0'
 
 @plugin.command
 @lightbulb.command(
